@@ -3,10 +3,10 @@ package aed;
 import java.util.ArrayList;
 
 public class BestEffort {
-    //Completar atributos privados
+    //Completar atributos privados 
 
     public BestEffort(int cantCiudades, Traslado[] traslados){
-        // Implementar
+        // estoy probando
     }
 
     public void registrarTraslados(Traslado[] traslados){
