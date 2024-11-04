@@ -7,13 +7,12 @@ public class Heap<T> {
     private ArrayList<T> _heap;
     private Comparator<T> _comparador;
     private int tam;
-    private int[] indices;
 
     public Heap (Comparator comparador, int cap){
         _heap = new ArrayList<>();
         _comparador = comparador;
         tam =0;
-        
+
     }
 
     public void encolar(T elemento){
