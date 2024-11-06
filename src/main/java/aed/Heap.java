@@ -2,20 +2,21 @@ package aed;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class Heap<T> {
-    private ArrayList<T> _heap;
-    private Comparator<T> _comparador;
+public class Heap {
+    private ArrayList<Traslado> _heap;
+    private Comparator<Traslado> _comparador;
     private int tam;
 
-    // Constructor que acepta un arreglo de elementos y usa el algoritmo de Floyd (heapify)
-    public Heap(Comparator<T> comparador, T[] elementos) {
+    // Constructor que acepta un arreglo de Traslado y usa el algoritmo de Floyd (heapify)
+    public Heap(Comparator<Traslado> comparador, Traslado[] elementos) {
         _heap = new ArrayList<>();
         _comparador = comparador;
         tam = elementos.length;
 
-        // Agregar todos los elementos al heap
-        for (T elemento : elementos) {
+        // Agregar todos los elementos al heap y asignarles su posición
+        for (Traslado elemento : elementos) {
             _heap.add(elemento);
+            elemento.posicion = _heap.size()-1;  // Asignar la posición en el heap
         }
 
         // Aplicar el algoritmo de Floyd (heapify)
@@ -24,19 +25,22 @@ public class Heap<T> {
         }
     }
 
-    // Constructor original (solo para encolar uno por uno)
-    public Heap(Comparator<T> comparador) {
+    // Constructor para encolar uno por uno
+    public Heap(Comparator<Traslado> comparador) {
         _heap = new ArrayList<>();
         _comparador = comparador;
         tam = 0;
     }
 
-    public void encolar(T elemento) {
-        _heap.add(elemento);
-        subir(tam);
+    // Método para encolar un Traslado
+    public void encolar(Traslado elemento) {
+        _heap.add(elemento);  // Añadir el Traslado al heap
+        elemento.posicion = tam;  // Asignar la posición actual en el heap
         tam++;
+        subir(tam - 1);  // Mantener el orden del heap
     }
 
+    // Método para subir un elemento en el heap
     private void subir(int indice) {
         while (indice > 0) {
             int indicePadre = (indice - 1) / 2;
@@ -48,29 +52,38 @@ public class Heap<T> {
         }
     }
 
+    // Método para intercambiar dos elementos
     private void swap(int i, int j) {
-        T aux = _heap.get(i);
+        Traslado aux = _heap.get(i);
         _heap.set(i, _heap.get(j));
         _heap.set(j, aux);
+
+        // Actualizar las posiciones de los elementos después del swap
+        _heap.get(i).posicion = i;
+        _heap.get(j).posicion = j;
     }
 
-    public T obtenerRaiz() {
+    // Método para obtener la raíz del heap
+    public Traslado obtenerRaiz() {
         return _heap.get(0);
     }
 
-    public T sacarRaiz() {
-        T raiz = _heap.get(0);
-        T ultimoElemento = _heap.remove(tam - 1);
+    // Método para sacar la raíz del heap
+    public Traslado sacarRaiz() {
+        Traslado raiz = _heap.get(0);
+        Traslado ultimoElemento = _heap.remove(tam - 1);
         tam--;
 
         if (tam > 0) {
             _heap.set(0, ultimoElemento);
+            ultimoElemento.posicion = 0;  // Actualizar la posición del último elemento
             bajar(0);
         }
 
         return raiz;
     }
 
+    // Método para bajar un elemento en el heap
     private void bajar(int indice) {
         while (true) {
             int indiceIzquierdo = 2 * indice + 1;
@@ -96,11 +109,29 @@ public class Heap<T> {
         }
     }
 
+    // Método para verificar si el heap está vacío
     public boolean estaVacio() {
         return tam == 0;
     }
 
+    // Método para obtener el tamaño del heap
     public int tamano() {
         return tam;
     }
+
+    public void eliminarElemento(Traslado elemento) {
+
+        int indice = elemento.posicion;
+
+        Traslado ultimoElemento = _heap.get(tam - 1);
+        _heap.set(indice, ultimoElemento);
+        ultimoElemento.posicion = indice;  
+
+        _heap.remove(tam - 1);
+        tam--;
+        
+        bajar(indice);
+    }
+    
+
 }

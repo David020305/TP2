@@ -9,6 +9,7 @@ public class Traslado {
     int timestamp;
 
     Traslado puntero;
+    int posicion;
 
     public Traslado(int id, int origen, int destino, int gananciaNeta, int timestamp){
         this.id = id;
@@ -17,5 +18,6 @@ public class Traslado {
         this.gananciaNeta = gananciaNeta;
         this.timestamp = timestamp;
         this.puntero = null;
+        this.posicion = -1;
     }
 }
