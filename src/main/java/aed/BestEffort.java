@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class BestEffort {
     //Completar atributos privados 
-    private Ciudad[] array;
+    private Ciudad[] ciudadesarray;
     private Traslado[] traslados1;
     private Traslado[] traslados2;
     private Heap heapGananciaNeta;
@@ -14,26 +14,49 @@ public class BestEffort {
     private ArrayList mayorPerdida;
 
     public BestEffort(int cantCiudades, Traslado[] traslados){
-        array = new Ciudad[cantCiudades];
-        mayorSuperavit =  new int[2];
+        ciudadesarray = new Ciudad[cantCiudades];
+        mayorSuperavit =  new int[1];
         int i = 0;
         while (i < cantCiudades) {  // O(|cantCiudades|)
-            array[i] = new Ciudad(0, 0, 0);  // Crear y asignar nuevas ciudades
+            ciudadesarray[i] = new Ciudad(0, 0, 0);  // Crear y asignar nuevas ciudades
             i++;
         } 
 
 
-        this.traslados1 = traslados;
-        this.traslados2 = traslados;
-        
+        this.traslados1 = new Traslado[traslados.length];
+        this.traslados2 = new Traslado[traslados.length];
+
+        for (int j = 0; j < traslados.length; j++) {//O(T)
+            Traslado original = traslados[j];
+            // Crear nuevas instancias de Traslado con los mismos valores que 'original'
+            this.traslados1[j] = new Traslado(original.id, original.origen, original.destino, original.gananciaNeta, original.timestamp);
+            this.traslados2[j] = new Traslado(original.id, original.origen, original.destino, original.gananciaNeta, original.timestamp);
+        }
+        /* Crea un nuevo objeto y hace que se apunten traslado1 y traslado2
         apuntar apuntador = new apuntar();
         apuntador.puntero(traslados1, traslados2);
+        */
+        apuntador(traslados1, traslados2);//O(T)
 
         TrasladoComparators comparators = new TrasladoComparators();
 
-        heapGananciaNeta = new Heap(comparators.POR_GANANCIA_NETA, traslados1);
-        heapTimestamp = new Heap(comparators.POR_TIMESTAMP, traslados2);
+        heapGananciaNeta = new Heap(comparators.POR_GANANCIA_NETA, traslados1);// O(T)
+        heapTimestamp = new Heap(comparators.POR_TIMESTAMP, traslados2);//O(T)
+
     }
+    
+    private void apuntador (Traslado[] trasladosone, Traslado[] trasladostwo){ // O(T)
+        int length = traslados1.length;
+
+        for (int i = 0; i < length; i++) {
+            trasladosone[i].puntero = trasladostwo[i]; 
+        }
+        
+        for (int j = 0; j < length; j++) {
+            trasladostwo[j].puntero = trasladosone[j]; 
+        }
+    }
+
 
     public void registrarTraslados(Traslado[] traslados){
         // Implementar
@@ -41,58 +64,53 @@ public class BestEffort {
 
     public int[] despacharMasRedituables(int n){
         int[] res = new int[n];
-        
-        int[] anadir = new int[2];
+        //10 traslado
+        // 50 pesos
+        // 45 --> 55
+        //  --> 40
+        int anadir;
         int i = 0;
         while (i<n) {
-            Traslado maxGanancia = heapGananciaNeta.sacarRaiz();
-            res[i] = maxGanancia.id;
+            Traslado maxGanancia = heapGananciaNeta.sacarRaiz();// O(log T) 
+            res[i] = maxGanancia.id;//lo agrego al array res
 
-            array[maxGanancia.origen].ganancia += maxGanancia.gananciaNeta;
-            array[maxGanancia.destino].perdida += maxGanancia.gananciaNeta;
+            ciudadesarray[maxGanancia.origen].ganancia += maxGanancia.gananciaNeta;
+            ciudadesarray[maxGanancia.destino].perdida += maxGanancia.gananciaNeta;
 
-            array[maxGanancia.origen].superavit = array[maxGanancia.origen].ganancia - array[maxGanancia.origen].perdida;
-            array[maxGanancia.destino].superavit = array[maxGanancia.destino].ganancia -array[maxGanancia.destino].perdida;
+            ciudadesarray[maxGanancia.origen].superavit = ciudadesarray[maxGanancia.origen].ganancia - ciudadesarray[maxGanancia.origen].perdida;
+            ciudadesarray[maxGanancia.destino].superavit = ciudadesarray[maxGanancia.destino].ganancia -ciudadesarray[maxGanancia.destino].perdida;
 
-            // sacar el mayorsuperavir de las dos ciudades despachadas
-            if (array[maxGanancia.origen].superavit > array[maxGanancia.destino].superavit){
-                anadir[0] = maxGanancia.origen;
-                anadir[1] = array[maxGanancia.origen].superavit;
+            // sacar el mayorsuperavir de las dos ciudades despachadas // esto tratar de hacer un metodo privado donde como
+            // parametro recibe como queires comparar, ya sea por superavit o ganacia o perdida 
+
+            if (ciudadesarray[maxGanancia.origen].superavit > ciudadesarray[maxGanancia.destino].superavit){
+                anadir = maxGanancia.origen;                
             }
-            else if (array[maxGanancia.origen].superavit < array[maxGanancia.destino].superavit) {
-                anadir[0] = maxGanancia.destino;
-                anadir[1] = array[maxGanancia.destino].superavit;
+            else if (ciudadesarray[maxGanancia.origen].superavit < ciudadesarray[maxGanancia.destino].superavit) {
+                anadir = maxGanancia.destino;                
             }
             else if (maxGanancia.origen > maxGanancia.destino) {
-                anadir[0] = maxGanancia.destino;
-                anadir[1] = array[maxGanancia.destino].superavit;
+                anadir = maxGanancia.destino;
             }
             else{
-                anadir[0] = maxGanancia.origen;
-                anadir[1] = array[maxGanancia.origen].superavit;
+                anadir = maxGanancia.origen;     
             }
 
             // saca el mayor o mayores --> mayoresGanacias de los dos despachos
 
-
-
-
             if (mayorSuperavit.length == 0) {
-                mayorSuperavit[0] = anadir[0];
-                mayorSuperavit[1] = anadir [1];
+                mayorSuperavit[0] = anadir;           
             }
-            else if(mayorSuperavit[1] < anadir[1]){
-                mayorSuperavit[0] = anadir[0]; 
-                mayorSuperavit[1] = anadir[1];
+            else if(mayorSuperavit[0] < ciudadesarray[anadir].superavit){
+                mayorSuperavit[0] = anadir; 
             }
-            else if(mayorSuperavit[1] == anadir[1]){
-                if(anadir[0] < mayorSuperavit[0]){
-                    mayorSuperavit[0] = anadir[0]; 
-                    mayorSuperavit[1] = anadir[1];
+            else if(mayorSuperavit[0] == ciudadesarray[anadir].superavit){
+                if(anadir < mayorSuperavit[0]){// comparar que id es menor
+                    mayorSuperavit[0] = anadir;    
                 }
             }
 
-            heapTimestamp.eliminarElemento(maxGanancia.puntero);
+            heapTimestamp.eliminarElemento(maxGanancia.puntero);// O(log T)
             i++;
         }
 

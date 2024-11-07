@@ -16,7 +16,7 @@ public class Heap {
         // Agregar todos los elementos al heap y asignarles su posición
         for (Traslado elemento : elementos) {
             _heap.add(elemento);
-            elemento.posicion = _heap.size()-1;  // Asignar la posición en el heap
+            elemento.posicion =  tam - 1;  // Asignar la posición en el heap
         }
 
         // Aplicar el algoritmo de Floyd (heapify)
