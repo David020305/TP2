@@ -14,22 +14,16 @@ public class Heap {
         tam = elementos.length;
 
         // Agregar todos los elementos al heap y asignarles su posición
-        for (Traslado elemento : elementos) {
+        for (int i = 0; i < tam; i++) {
+            Traslado elemento = elementos[i];
             _heap.add(elemento);
-            elemento.posicion =  tam - 1;  // Asignar la posición en el heap
+            elemento.posicion = i;  // Asignar la posición correcta en el heap
         }
 
         // Aplicar el algoritmo de Floyd (heapify)
         for (int i = tam / 2 - 1; i >= 0; i--) {
             bajar(i);
         }
-    }
-
-    // Constructor para encolar uno por uno
-    public Heap(Comparator<Traslado> comparador) {
-        _heap = new ArrayList<>();
-        _comparador = comparador;
-        tam = 0;
     }
 
     // Método para encolar un Traslado
@@ -48,6 +42,7 @@ public class Heap {
                 break;
             }
             swap(indice, indicePadre);
+            
             indice = indicePadre;
         }
     }
@@ -103,7 +98,7 @@ public class Heap {
             if (indiceMayor == indice) {
                 break;
             }
-
+ 
             swap(indice, indiceMayor);
             indice = indiceMayor;
         }
@@ -131,6 +126,15 @@ public class Heap {
         tam--;
         
         bajar(indice);
+        
+    }
+
+    public Traslado obtenerElemento(int index) {
+        if (index >= 0 && index < _heap.size()) {
+            return _heap.get(index);
+        } else {
+            throw new IndexOutOfBoundsException("Índice fuera de los límites del heap");
+        }
     }
     
 

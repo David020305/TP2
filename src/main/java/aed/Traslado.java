@@ -20,4 +20,13 @@ public class Traslado {
         this.puntero = null;
         this.posicion = -1;
     }
+    public Traslado(Traslado otro) {
+        this.id = otro.id;
+        this.origen = otro.origen;
+        this.destino = otro.destino;
+        this.gananciaNeta = otro.gananciaNeta;
+        this.timestamp = otro.timestamp;
+        this.puntero = otro.puntero;
+        this.posicion = otro.posicion;
+    }
 }
