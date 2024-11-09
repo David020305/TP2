@@ -2,34 +2,67 @@ package aed;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class Heap {
-    private ArrayList<Traslado> _heap;
-    private Comparator<Traslado> _comparador;
+public class Heap<T> {
+    private ArrayList<T> _heap;
+    private Comparator<T> _comparador;
     private int tam;
 
+
+
     // Constructor que acepta un arreglo de Traslado y usa el algoritmo de Floyd (heapify)
-    public Heap(Comparator<Traslado> comparador, Traslado[] elementos) {
+    public Heap(Comparator<T> comparador, T[] elementos) {
+
         _heap = new ArrayList<>();
         _comparador = comparador;
         tam = elementos.length;
 
         // Agregar todos los elementos al heap y asignarles su posición
         for (int i = 0; i < tam; i++) {
-            Traslado elemento = elementos[i];
+            T elemento = elementos[i];
             _heap.add(elemento);
-            elemento.posicion = i;  // Asignar la posición correcta en el heap
+
+            actualizarposicion(elemento,i);
+            //elemento.posicion = i;  // Asignar la posición correcta en el heap
         }
 
         // Aplicar el algoritmo de Floyd (heapify)
+        floyd();
+        
+    }
+    public void cambiarSuperavit (int indece, T valor){
+        _heap.set(indece, valor);
+        //actualizarposicion(valor, indece);
+        floyd();
+        
+    }
+
+    private void floyd(){
         for (int i = tam / 2 - 1; i >= 0; i--) {
-            bajar(i);
+            bajar(i); 
+        }
+        for (int i = 0; i < tam; i++) {
+            actualizarposicion(_heap.get(i), i);
+        }
+    }
+
+    private void actualizarposicion(T elemento, int pos){
+        
+        //ciu = new Ciudad(1,2,3,4);
+        if (elemento.getClass() == Traslado.class){
+            Traslado trasla = (Traslado) elemento; // Cast 
+            trasla.posicion = pos;
+        }
+        else{
+            Ciudad ciud = (Ciudad) elemento; // Cast 
+            ciud.posicion = pos;
         }
     }
 
     // Método para encolar un Traslado
-    public void encolar(Traslado elemento) {
+    public void encolar(T elemento) {
         _heap.add(elemento);  // Añadir el Traslado al heap
-        elemento.posicion = tam;  // Asignar la posición actual en el heap
+        //elemento.posicion =tam 
+        actualizarposicion(elemento,tam);  // Asignar la posición actual en el heap
         tam++;
         subir(tam - 1);  // Mantener el orden del heap
     }
@@ -49,29 +82,32 @@ public class Heap {
 
     // Método para intercambiar dos elementos
     private void swap(int i, int j) {
-        Traslado aux = _heap.get(i);
+        T aux = _heap.get(i);
         _heap.set(i, _heap.get(j));
         _heap.set(j, aux);
 
         // Actualizar las posiciones de los elementos después del swap
-        _heap.get(i).posicion = i;
-        _heap.get(j).posicion = j;
+        //_heap.get(i).posicion = i;
+        actualizarposicion(_heap.get(i),i);
+        //_heap.get(j).posicion = j;
+        actualizarposicion(_heap.get(j),j);
     }
 
     // Método para obtener la raíz del heap
-    public Traslado obtenerRaiz() {
+    public T obtenerRaiz() {
         return _heap.get(0);
     }
 
     // Método para sacar la raíz del heap
-    public Traslado sacarRaiz() {
-        Traslado raiz = _heap.get(0);
-        Traslado ultimoElemento = _heap.remove(tam - 1);
+    public T sacarRaiz() {
+        T raiz = _heap.get(0);
+        T ultimoElemento = _heap.remove(tam - 1);
         tam--;
 
         if (tam > 0) {
             _heap.set(0, ultimoElemento);
-            ultimoElemento.posicion = 0;  // Actualizar la posición del último elemento
+            //ultimoElemento.posicion = 0;  // Actualizar la posición del último elemento
+            actualizarposicion(ultimoElemento,0);
             bajar(0);
         }
 
@@ -114,13 +150,13 @@ public class Heap {
         return tam;
     }
 
-    public void eliminarElemento(Traslado elemento) {
+    public void eliminarElemento(int indice) {
 
-        int indice = elemento.posicion;
-
-        Traslado ultimoElemento = _heap.get(tam - 1);
+        T ultimoElemento = _heap.get(tam - 1);
         _heap.set(indice, ultimoElemento);
-        ultimoElemento.posicion = indice;  
+
+        //ultimoElemento.posicion = indice;  
+        actualizarposicion(ultimoElemento, indice);
 
         _heap.remove(tam - 1);
         tam--;
@@ -129,7 +165,7 @@ public class Heap {
         
     }
 
-    public Traslado obtenerElemento(int index) {
+    public T obtenerElemento(int index) {
         if (index >= 0 && index < _heap.size()) {
             return _heap.get(index);
         } else {
