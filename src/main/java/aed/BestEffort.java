@@ -157,8 +157,8 @@ public class BestEffort {
 
             ciudadesarray1[maxGanancia.origen].ganancia += maxGanancia.gananciaNeta;
             ciudadesarray1[maxGanancia.destino].perdida += maxGanancia.gananciaNeta;
-            ciudadesarray1[maxGanancia.origen].superavit += ciudadesarray1[maxGanancia.origen].ganancia -ciudadesarray1[maxGanancia.origen].perdida;
-            ciudadesarray1[maxGanancia.destino].superavit += ciudadesarray1[maxGanancia.destino].ganancia -ciudadesarray1[maxGanancia.destino].perdida;
+            ciudadesarray1[maxGanancia.origen].superavit = ciudadesarray1[maxGanancia.origen].ganancia -ciudadesarray1[maxGanancia.origen].perdida;
+            ciudadesarray1[maxGanancia.destino].superavit = ciudadesarray1[maxGanancia.destino].ganancia -ciudadesarray1[maxGanancia.destino].perdida;
 
             //ciudadesarray2[ciudadesarray1[maxGanancia.origen].puntero.posicion].superavit += maxGanancia.gananciaNeta; 
             //ciudadesarray2[ciudadesarray1[maxGanancia.destino].puntero.posicion].superavit += maxGanancia.gananciaNeta;
@@ -213,14 +213,34 @@ public class BestEffort {
     }
     
     private void comparoSuperavit(Traslado despachado) {
-
-        heapSuperavit.cambiarSuperavit(ciudadesarray1[despachado.origen].puntero.posicion, ciudadesarray1[despachado.origen]);
-
-        heapSuperavit.cambiarSuperavit(ciudadesarray1[despachado.destino].puntero.posicion, ciudadesarray1[despachado.destino]);
-
         
+
+        heapSuperavit.eliminarElemento(ciudadesarray1[despachado.origen].puntero.posicion);
+
+        Ciudad original1 = ciudadesarray1[despachado.origen];
+        Ciudad agregar1 = new Ciudad(original1.id, original1.ganancia, original1.perdida, original1.superavit);
+
+        original1.puntero = agregar1;
+        agregar1.puntero = original1;
+
+        heapSuperavit.encolar(agregar1);
+
+
+        heapSuperavit.eliminarElemento(ciudadesarray1[despachado.destino].puntero.posicion);
         
-        //maxSuperavit = heapSuperavit.sacarRaiz().superavit;
+        Ciudad original2 = ciudadesarray1[despachado.destino];
+        Ciudad agregar2 = new Ciudad(original2.id, original2.ganancia, original2.perdida, original2.superavit);
+
+        original2.puntero = agregar2;
+        agregar2.puntero = original2;
+
+        heapSuperavit.encolar(agregar2);
+
+
+        System.out.println(ciudadesarray1[despachado.destino].puntero.id + " puntero destino en el heap");
+        System.out.println(agregar2.puntero.id + " puntero destino de la ciudad ");
+
+
         
     }
 
@@ -246,8 +266,8 @@ public class BestEffort {
 
             ciudadesarray1[maxAntiguo.origen].ganancia += maxAntiguo.gananciaNeta;
             ciudadesarray1[maxAntiguo.destino].perdida += maxAntiguo.gananciaNeta;
-            ciudadesarray1[maxAntiguo.origen].superavit += ciudadesarray1[maxAntiguo.origen].ganancia -ciudadesarray1[maxAntiguo.origen].perdida;
-            ciudadesarray1[maxAntiguo.destino].superavit += ciudadesarray1[maxAntiguo.destino].ganancia -ciudadesarray1[maxAntiguo.destino].perdida;
+            ciudadesarray1[maxAntiguo.origen].superavit = ciudadesarray1[maxAntiguo.origen].ganancia -ciudadesarray1[maxAntiguo.origen].perdida;
+            ciudadesarray1[maxAntiguo.destino].superavit = ciudadesarray1[maxAntiguo.destino].ganancia -ciudadesarray1[maxAntiguo.destino].perdida;
 
             //ciudadesarray2[ciudadesarray1[maxGanancia.origen].puntero.posicion].superavit += maxGanancia.gananciaNeta; 
             //ciudadesarray2[ciudadesarray1[maxGanancia.destino].puntero.posicion].superavit += maxGanancia.gananciaNeta;
