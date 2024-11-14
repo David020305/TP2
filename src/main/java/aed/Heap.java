@@ -26,36 +26,24 @@ public class Heap<T> {
         }
 
         // Aplicar el algoritmo de Floyd (heapify)
-        for (int i = tam / 2 - 1; i >= 0; i--) {
+        for (int i = tam / 2 - 1; i >= 0; i--) { // O(T)
             bajar(i,_heap.get(i));
-        }
-        for (int i = 0; i < tam; i++) {
             actualizarposicion(_heap.get(i), i);
         }
     }
-    /*public void cambiarSuperavit (int indece, T elmento){
+    public void cambiarSuperavit (int indice, T elemento){
+        //eliminarElemento(indece);
+        //encolar(elmento);
 
-        eliminarElemento(indece);
-
-        encolar(elmento);
-
-        //_heap.set(indece, valor);
-        //actualizarposicion(valor, indece);
+        _heap.set(indice, elemento);
+        subir(indice, elemento);
+        bajar(indice, elemento);
+        actualizarposicion(elemento, indice);
         
     }
 
-    /*private void floyd(){
-        for (int i = tam / 2 - 1; i >= 0; i--) {
-            bajar(i); 
-        }
-        for (int i = 0; i < tam; i++) {
-            actualizarposicion(_heap.get(i), i);
-        }
-    }*/
-
-    private void actualizarposicion(T elemento, int pos){
+    private void actualizarposicion(T elemento, int pos){ //O(1)
         
-        //ciu = new Ciudad(1,2,3,4);
         if (elemento.getClass() == Traslado.class){
             Traslado trasla = (Traslado) elemento; // Cast 
             trasla.posicion = pos;
@@ -67,22 +55,17 @@ public class Heap<T> {
     }
 
     // Método para encolar un Traslado
-    public void encolar(T elemento) {
+    public void encolar(T elemento) { // O(log n)
         _heap.add(elemento);  // Añadir el Traslado al heap
-        //elemento.posicion =tam 
         actualizarposicion(elemento,tam);  // Asignar la posición actual en el heap
         tam++;
         subir(tam - 1, _heap.get(tam-1));  // Mantener el orden del heap
     }
-    public void ponerAlFinal(T elemento){
-        _heap.add(elemento);
-    }
-    public void eliminarElemento(int indice) {
 
+    public void eliminarElemento(int indice) { // O(log n)
         T ultimoElemento = _heap.get(tam - 1);
         _heap.set(indice, ultimoElemento);
-
-        //ultimoElemento.posicion = indice;  
+  
         actualizarposicion(ultimoElemento, indice);
 
         bajar(indice, _heap.get(indice));
@@ -91,7 +74,6 @@ public class Heap<T> {
         tam--;
         
     }
-
 
     // Método para subir un elemento en el heap
     private void subir(int indice, T elemento) {
@@ -120,21 +102,6 @@ public class Heap<T> {
         }
     }
 
-    /* 
-    private void subir(int indice) {
-        while (indice > 0) {
-            int indicePadre = (indice - 1) / 2;
-            if (_comparador.compare(_heap.get(indice), _heap.get(indicePadre)) <= 0) {
-                break;
-            }
-            swap(indice, indicePadre);
-            
-            indice = indicePadre;
-        }
-    }*/
-
-
-
     // Método para intercambiar dos elementos
     private void swap(int i, int j) {
         T aux = _heap.get(i);
@@ -142,9 +109,7 @@ public class Heap<T> {
         _heap.set(j, aux);
 
         // Actualizar las posiciones de los elementos después del swap
-        //_heap.get(i).posicion = i;
         actualizarposicion(_heap.get(i),i);
-        //_heap.get(j).posicion = j;
         actualizarposicion(_heap.get(j),j);
     }
 
@@ -161,7 +126,7 @@ public class Heap<T> {
 
         if (tam > 0) {
             _heap.set(0, ultimoElemento);
-            //ultimoElemento.posicion = 0;  // Actualizar la posición del último elemento
+           // Actualizar la posición del último elemento
             actualizarposicion(ultimoElemento,0);
             bajar(0, _heap.get(0));
         }
@@ -228,49 +193,13 @@ public class Heap<T> {
     }
 
 
-    /*private void bajar(int indice) {
-        while (true) {
-            int indiceIzquierdo = 2 * indice + 1;
-            int indiceDerecho = 2 * indice + 2;
-            int indiceMayor = indice;
-
-            if (indiceIzquierdo < tam &&
-                _comparador.compare(_heap.get(indiceIzquierdo), _heap.get(indiceMayor)) > 0) {
-                indiceMayor = indiceIzquierdo;
-            }
-
-            if (indiceDerecho < tam &&
-                _comparador.compare(_heap.get(indiceDerecho), _heap.get(indiceMayor)) > 0) {
-                indiceMayor = indiceDerecho;
-            }
-
-            if (indiceMayor == indice) {
-                break;
-            }
- 
-            swap(indice, indiceMayor);
-            indice = indiceMayor;
-        }
-    }*/
-
-    // Método para verificar si el heap está vacío
-    public boolean estaVacio() {
-        return tam == 0;
-    }
-
     // Método para obtener el tamaño del heap
     public int tamano() {
         return tam;
     }
-
-    
-
+    //( NO SE USA EN EL PROGRAMA)
     public T obtenerElemento(int index) {
-        if (index >= 0 && index < _heap.size()) {
-            return _heap.get(index);
-        } else {
-            throw new IndexOutOfBoundsException("Índice fuera de los límites del heap");
-        }
+        return _heap.get(index);
     }
     
 
