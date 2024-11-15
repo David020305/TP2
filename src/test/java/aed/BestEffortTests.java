@@ -434,4 +434,104 @@ public class BestEffortTests {
 
     } 
 
+    @Test
+        void mayor_ganancia_dos_id_menor(){
+            BestEffort sis = new BestEffort(this.cantCiudades, this.listaTraslados);
+            Traslado[] nuevos = new Traslado[] {
+                new Traslado(1, 3, 4, 1, 7),
+                new Traslado(7, 6, 5, 40, 6),
+                new Traslado(6, 5, 6, 100, 5),
+                new Traslado(2, 2, 1, 41, 4),
+                new Traslado(3, 3, 4, 100, 3),
+                new Traslado(4, 6, 2, 100, 2),
+                new Traslado(5, 4, 1, 90, 1)
+            };
+            sis.registrarTraslados(nuevos);
+
+            sis.despacharMasRedituables(2);
+
+            assertSetEquals(new ArrayList<>(Arrays.asList(6)), sis.ciudadesConMayorGanancia());
+        }
+    
+        @Test
+        void mayor_ganancia_uno_id_menor(){
+            BestEffort sis = new BestEffort(this.cantCiudades, this.listaTraslados);
+            Traslado[] nuevos = new Traslado[] {
+                new Traslado(1, 3, 4, 1, 7),
+                new Traslado(7, 6, 5, 40, 6),
+                new Traslado(6, 5, 6, 3, 5),
+                new Traslado(2, 2, 1, 41, 4),
+                new Traslado(3, 3, 4, 100, 3),
+                new Traslado(4, 6, 2, 100, 2),
+                new Traslado(5, 4, 1, 90, 1)
+            };
+            sis.registrarTraslados(nuevos);
+    
+            sis.despacharMasRedituables(1);
+    
+            assertSetEquals(new ArrayList<>(Arrays.asList(6)), sis.ciudadesConMayorGanancia());
+        }
+
+        @Test
+        void mayor_ganancia_sin_despachar(){
+            BestEffort sis = new BestEffort(this.cantCiudades, this.listaTraslados);
+            Traslado[] nuevos = new Traslado[] {
+                new Traslado(1, 3, 4, 1, 7),
+                new Traslado(7, 6, 5, 40, 6),
+                new Traslado(6, 5, 6, 3, 5),
+                new Traslado(2, 2, 1, 41, 4),
+                new Traslado(3, 3, 4, 100, 3),
+                new Traslado(4, 1, 2, 30, 2),
+                new Traslado(5, 2, 1, 90, 1)
+            };
+            sis.registrarTraslados(nuevos);
+    
+            assertSetEquals(new ArrayList<>(Arrays.asList(0,1,2,3,4,5,6)), sis.ciudadesConMayorGanancia());
+        }
+
+        @Test
+        void mayor_ganancia_ids_no_contiguos(){
+            BestEffort sis = new BestEffort(this.cantCiudades,this.listaTraslados);
+            Traslado[] nuevos = new Traslado[] {
+                new Traslado(2, 3, 4, 1, 7),
+                new Traslado(6, 6, 5, 40, 6),
+                new Traslado(4, 6, 3, 15, 5),
+                new Traslado(5, 2, 1, 25, 4),
+                new Traslado(1, 3, 4, 20, 3),
+                new Traslado(7, 6, 2, 10, 2),
+                new Traslado(3, 4, 1, 15, 1)
+            };
+            sis.registrarTraslados(nuevos);
+    
+            sis.despacharMasAntiguos(5);
+    
+            assertSetEquals(new ArrayList<>(Arrays.asList(6,2)), sis.ciudadesConMayorGanancia());
+        }
+
+        @Test
+        void mayor_ganancia_despacho_todos_mismo_valor() {
+            BestEffort sis = new BestEffort(this.cantCiudades, this.listaTraslados);
+            Traslado[] nuevos = new Traslado[] {
+                new Traslado(1, 3, 1, 100, 7),
+                new Traslado(2, 1, 2, 100, 6),
+                new Traslado(3, 1, 3, 100, 5),
+                new Traslado(4, 3, 6, 100, 4),
+                new Traslado(5, 6, 4, 100, 3),
+                new Traslado(6, 3, 6, 100, 2),
+                new Traslado(7, 6, 3, 100, 1),
+                new Traslado(8, 1, 3, 100, 1),
+                new Traslado(9, 6, 2, 100, 1)
+            };
+    
+            sis.registrarTraslados(nuevos);
+    
+            sis.despacharMasAntiguos(9);
+    
+            assertEquals(new ArrayList<>(Arrays.asList(6,1,3)), sis.ciudadesConMayorGanancia());
+    
+            sis.despacharMasRedituables(4);
+    
+            assertEquals(new ArrayList<>(Arrays.asList(6,1)), sis.ciudadesConMayorGanancia());
+        }
+    
 }
