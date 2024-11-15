@@ -126,8 +126,8 @@ public class Heap<T> {
 
         if (tam > 0) {
             _heap.set(0, ultimoElemento);
-           // Actualizar la posición del último elemento
             actualizarposicion(ultimoElemento,0);
+            
             bajar(0, _heap.get(0));
         }
 
@@ -136,7 +136,7 @@ public class Heap<T> {
 
     // Método para bajar un elemento en el heap
 
-    private void bajar(int indice, T elemento) {
+    /*private void bajar(int indice, T elemento) {
         while (true) {
             int indiceIzquierdo = 2 * indice + 1;
             int indiceDerecho = 2 * indice + 2;
@@ -146,13 +146,13 @@ public class Heap<T> {
                 _comparador.compare(_heap.get(indiceIzquierdo), _heap.get(indiceMayor)) >= 0) {
                     if (_comparador.compare(_heap.get(indiceIzquierdo), _heap.get(indiceMayor)) == 0) {
                         if (elemento.getClass() == Traslado.class) {
-                            Traslado tras = (Traslado) elemento;
+                            Traslado tras = (Traslado) _heap.get(indiceMayor);;
                             Traslado hijoizq = (Traslado) _heap.get(indiceIzquierdo);
                             if (tras.id > hijoizq.id) {
                                 indiceMayor = indiceIzquierdo;
                             }
                         } else {
-                            Ciudad ciu = (Ciudad) elemento;
+                            Ciudad ciu = (Ciudad) _heap.get(indiceMayor);;
                             Ciudad hijoizq = (Ciudad) _heap.get(indiceIzquierdo);
                             if (ciu.id > hijoizq.id) {
                                 indiceMayor = indiceIzquierdo;
@@ -166,13 +166,13 @@ public class Heap<T> {
                 _comparador.compare(_heap.get(indiceDerecho), _heap.get(indiceMayor)) >= 0) {
                     if (_comparador.compare(_heap.get(indiceDerecho), _heap.get(indiceMayor)) == 0) {
                         if (elemento.getClass() == Traslado.class) {
-                            Traslado tras = (Traslado) elemento;
+                            Traslado tras = (Traslado) _heap.get(indiceMayor);
                             Traslado hijoder = (Traslado) _heap.get(indiceDerecho);
                             if (tras.id > hijoder.id) {
                                 indiceMayor = indiceDerecho;
                             }
                         } else {
-                            Ciudad ciu = (Ciudad) elemento;
+                            Ciudad ciu = (Ciudad) _heap.get(indiceMayor);
                             Ciudad hijoder = (Ciudad) _heap.get(indiceDerecho);
                             if (ciu.id > hijoder.id) {
                                 indiceMayor = indiceDerecho;
@@ -190,14 +190,64 @@ public class Heap<T> {
             swap(indice, indiceMayor);
             indice = indiceMayor;
         }
+    }*/
+     
+    private void bajar(int indice, T elemento) {
+        while (true) {
+            int indiceIzquierdo = 2 * indice + 1;
+            int indiceDerecho = 2 * indice + 2;
+            int indiceMayor = indice;
+    
+            if (indiceIzquierdo < tam) {
+                indiceMayor = obtenerIndiceMayor(indiceMayor, indiceIzquierdo, elemento);
+            }
+    
+            if (indiceDerecho < tam) {
+                indiceMayor = obtenerIndiceMayor(indiceMayor, indiceDerecho, elemento);
+            }
+    
+            if (indiceMayor == indice) {
+                break;
+            }
+    
+            swap(indice, indiceMayor);
+            indice = indiceMayor;
+        }
     }
 
+    private int obtenerIndiceMayor(int actual, int candidato, T elemento) {
+        int comparacion = _comparador.compare(_heap.get(candidato), _heap.get(actual));
+        
+        if (comparacion > 0) {
+            return candidato;
+        } else if (comparacion == 0) {
+            if (elemento.getClass() == Traslado.class) {
+                Traslado actualElem = (Traslado) _heap.get(actual);
+                Traslado candidatoElem = (Traslado) _heap.get(candidato);
+                if (actualElem.id > candidatoElem.id) {
+                    return candidato;
+                } else {
+                    return actual;
+                }
+            } else if (elemento.getClass() == Ciudad.class) {
+                Ciudad actualElem = (Ciudad) _heap.get(actual);
+                Ciudad candidatoElem = (Ciudad) _heap.get(candidato);
+                if (actualElem.id > candidatoElem.id) {
+                    return candidato;
+                } else {
+                    return actual;
+                }
+            }
+        }
+        return actual;
+    }
+    
 
     // Método para obtener el tamaño del heap
     public int tamano() {
         return tam;
     }
-    //( NO SE USA EN EL PROGRAMA)
+    //( NO SE USA EN EL PROGRAMA)// solo para imprimir
     public T obtenerElemento(int index) {
         return _heap.get(index);
     }

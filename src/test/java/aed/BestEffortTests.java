@@ -345,4 +345,28 @@ public class BestEffortTests {
 
     }
     
+    @Test
+    void superavit_iguales() {
+        
+        Traslado[] nuevos = new Traslado[] {
+            new Traslado(1, 6, 3, 10, 7),
+            new Traslado(2, 5, 3, 10, 6),
+            new Traslado(3, 2, 3, 10, 5),
+            new Traslado(4, 1, 3, 10, 4),
+            new Traslado(5, 4, 3, 10, 3),
+            new Traslado(6, 0, 3, 10, 2),
+        };
+
+        BestEffort sis = new BestEffort(this.cantCiudades, nuevos);
+
+        sis.despacharMasRedituables(2);
+        assertEquals(5, sis.ciudadConMayorSuperavit());
+
+        sis.despacharMasRedituables(2);
+        assertEquals(1, sis.ciudadConMayorSuperavit());
+
+        sis.despacharMasRedituables(2);
+        assertEquals(0, sis.ciudadConMayorSuperavit());
+    }
+
 }

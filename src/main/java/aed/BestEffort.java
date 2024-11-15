@@ -148,7 +148,7 @@ public class BestEffort {
             
             Traslado maxGanancia = heapGananciaNeta.sacarRaiz();// O (log (T))
             res[i] = maxGanancia.id;//lo agrego al array res
-            System.out.println(maxGanancia.id + "id de mayor ganacia, origen--> " +maxGanancia.origen);
+            System.out.println(maxGanancia.id + " id de mayor ganacia, origen--> " + maxGanancia.origen);
 
             totalTraslados += 1;
             gananciaTotal += maxGanancia.gananciaNeta;
@@ -172,6 +172,7 @@ public class BestEffort {
             i++;
         }
         maxSuperavit = heapSuperavit.obtenerRaiz().id;
+        
         imprimirHeapGananciaNeta();
         imprimirHeapTimestamp();
         imprimirHeapSuperavit();
@@ -182,6 +183,7 @@ public class BestEffort {
             System.out.println(res[j]);
             j++;
         }
+        System.out.println("Mas redituable: "+maxSuperavit);
 
         return res;
     }
