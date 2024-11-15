@@ -345,28 +345,93 @@ public class BestEffortTests {
 
     }
     
-    @Test
-    void superavit_iguales() {
-        
+   @Test
+    void sin_superavit(){
         Traslado[] nuevos = new Traslado[] {
-            new Traslado(1, 6, 3, 10, 7),
-            new Traslado(2, 5, 3, 10, 6),
-            new Traslado(3, 2, 3, 10, 5),
-            new Traslado(4, 1, 3, 10, 4),
-            new Traslado(5, 4, 3, 10, 3),
-            new Traslado(6, 0, 3, 10, 2),
+            new Traslado(1, 0, 1, 30, 7),
+            new Traslado(2, 1, 0, 30, 6),
+            new Traslado(3, 2, 3, 40, 5),
+            new Traslado(4, 3, 2, 40, 4),
+            new Traslado(5, 5, 4, 100, 3),
+            new Traslado(6, 4, 5, 100, 2),
         };
-
         BestEffort sis = new BestEffort(this.cantCiudades, nuevos);
 
-        sis.despacharMasRedituables(2);
-        assertEquals(5, sis.ciudadConMayorSuperavit());
+        sis.despacharMasAntiguos(2);
+        assertEquals(4, sis.ciudadConMayorSuperavit());
 
-        sis.despacharMasRedituables(2);
+        sis.despacharMasAntiguos(2);
+        assertEquals(2, sis.ciudadConMayorSuperavit());
+
+        sis.despacharMasAntiguos(2);
+        assertEquals(0, sis.ciudadConMayorSuperavit());
+
+    }
+
+    @Test
+    void superavit_iguales(){
+        Traslado[] nuevos = new Traslado[] {
+            new Traslado(143, 6, 3, 10, 7),
+            new Traslado(25, 5, 3, 10, 6),
+            new Traslado(36, 2, 3, 10, 5),
+            new Traslado(755, 0, 3, 10, 4),
+            new Traslado(24, 1, 3, 10, 3),
+            new Traslado(123, 4, 3, 10, 2),
+        };
+        BestEffort sis = new BestEffort(this.cantCiudades, nuevos);
+
+        sis.despacharMasAntiguos(2);
         assertEquals(1, sis.ciudadConMayorSuperavit());
-
-        sis.despacharMasRedituables(2);
+        sis.despacharMasAntiguos(2);
+        assertEquals(0, sis.ciudadConMayorSuperavit());
+        sis.despacharMasAntiguos(2);
         assertEquals(0, sis.ciudadConMayorSuperavit());
     }
+
+    @Test
+    void superavit_timestamp_descendente(){
+        Traslado[] nuevos = new Traslado[] {
+            new Traslado(14, 0, 1, 20, 1),
+            new Traslado(276, 1, 4, 80, 2),
+            new Traslado(384, 2, 4, 60, 3),
+            new Traslado(434, 3, 5, 550, 4),
+            new Traslado(52, 5, 4, 330, 5),
+            new Traslado(60, 2, 5, 31, 6),
+        };
+        BestEffort sis = new BestEffort(this.cantCiudades, nuevos);
+
+        sis.despacharMasAntiguos(1);
+        assertEquals(0, sis.ciudadConMayorSuperavit());
+
+        sis.despacharMasAntiguos(2);
+        assertEquals(1, sis.ciudadConMayorSuperavit());
+
+        sis.despacharMasAntiguos(3);
+        assertEquals(3, sis.ciudadConMayorSuperavit());
+
+    }
+
+    @Test
+    void superavit_timestamp_mezclado(){
+        Traslado[] nuevos = new Traslado[] {
+            new Traslado(14, 0, 1, 20, 3),
+            new Traslado(276, 1, 4, 80, 1),
+            new Traslado(384, 2, 4, 60, 6),
+            new Traslado(434, 3, 5, 550, 5),
+            new Traslado(52, 5, 4, 330, 2),
+            new Traslado(60, 2, 5, 31, 4),
+        };
+        BestEffort sis = new BestEffort(this.cantCiudades, nuevos);
+
+        sis.despacharMasAntiguos(1);
+        assertEquals(1, sis.ciudadConMayorSuperavit());
+
+        sis.despacharMasAntiguos(2);
+        assertEquals(5, sis.ciudadConMayorSuperavit());
+
+        sis.despacharMasAntiguos(3);
+        assertEquals(3, sis.ciudadConMayorSuperavit());
+
+    } 
 
 }
