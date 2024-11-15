@@ -83,13 +83,13 @@ public class Heap<T> {
                 break;
             } else if (_comparador.compare((_heap.get(indice)), _heap.get(indicePadre)) == 0) {
                 if (elemento.getClass() == Traslado.class) {
-                    Traslado tras = (Traslado) elemento;
+                    Traslado tras = (Traslado) _heap.get(indice);
                     Traslado padre = (Traslado) _heap.get(indicePadre);
                     if (tras.id > padre.id) {
                         break;
                     }
                 } else {
-                    Ciudad ciu = (Ciudad) elemento;
+                    Ciudad ciu = (Ciudad) _heap.get(indice);
                     Ciudad padre = (Ciudad) _heap.get(indicePadre);
                     if (ciu.id > padre.id) {
                         break;
@@ -146,13 +146,13 @@ public class Heap<T> {
                 _comparador.compare(_heap.get(indiceIzquierdo), _heap.get(indiceMayor)) >= 0) {
                     if (_comparador.compare(_heap.get(indiceIzquierdo), _heap.get(indiceMayor)) == 0) {
                         if (elemento.getClass() == Traslado.class) {
-                            Traslado tras = (Traslado) _heap.get(indiceMayor);;
+                            Traslado tras = (Traslado) _heap.get(indiceMayor);
                             Traslado hijoizq = (Traslado) _heap.get(indiceIzquierdo);
                             if (tras.id > hijoizq.id) {
                                 indiceMayor = indiceIzquierdo;
                             }
                         } else {
-                            Ciudad ciu = (Ciudad) _heap.get(indiceMayor);;
+                            Ciudad ciu = (Ciudad) _heap.get(indiceMayor);
                             Ciudad hijoizq = (Ciudad) _heap.get(indiceIzquierdo);
                             if (ciu.id > hijoizq.id) {
                                 indiceMayor = indiceIzquierdo;
