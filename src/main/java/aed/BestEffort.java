@@ -34,6 +34,7 @@ public class BestEffort {
         totalTraslados = 0;
         gananciaTotal = 0;   
 
+        // Crea nuevas instancias de las ciudades
         int i = 0;
         while (i < cantCiudades) {  // O(C)
             ciudadesarray1[i] = new Ciudad(i,0, 0, 0);  // Crear y asignar nuevas ciudades
@@ -42,64 +43,38 @@ public class BestEffort {
             i++;
         } 
 
+        // Hace una copia de ciudadesarray1
         ciudadesarray2 = new Ciudad[cantCiudades];
-
         for(int j = 0; j <cantCiudades; j++) { // O(C)
             Ciudad original = ciudadesarray1[j];
             ciudadesarray2[j] = new Ciudad(j,original.ganancia, original.perdida,original.superavit);
         }
 
+
+        // Se hace dos copias de traslados
         this.traslados1 = new Traslado[traslados.length];
         this.traslados2 = new Traslado[traslados.length];
-
-        
-
         for (int j = 0; j < traslados.length; j++) {//O(T)
             Traslado original = traslados[j];
-            // Crear nuevas instancias de Traslado con los mismos valores que 'original'
             this.traslados1[j] = new Traslado(original.id, original.origen, original.destino, original.gananciaNeta, original.timestamp);//radizx sort, ver si ya lo paso ordenado, tipo de menor importancia a mayor
             this.traslados2[j] = new Traslado(original.id, original.origen, original.destino, original.gananciaNeta, original.timestamp);
         }
 
-        // Cada elemento apunta a su mismo elmento en la otra arreglo, para no perder la referencia
+        // Cada elemento apunta a su mismo elmento en el otro arreglo, para no perder la referencia
         apuntadortra(traslados1, traslados2);//O(T) 
         apuntadorciu(ciudadesarray1, ciudadesarray2);//O(C)
 
-
+        // Se crea para poder definir el criterio para armar el heap
         TrasladoComparators comparators = new TrasladoComparators();
 
+        // Se crea los heap dependiendo el criterio y es O(n) ya que en el costructor del heap usamos el algoritmo de floyd
         heapGananciaNeta = new Heap<Traslado>(comparators.POR_GANANCIA_NETA, traslados1);// O(T)
         heapTimestamp = new Heap<Traslado>(comparators.POR_TIMESTAMP, traslados2);//O(T)
         heapSuperavit = new Heap<Ciudad>(comparators.POR_SUPERAVIT,ciudadesarray2); // O(C)
 
-        imprimirHeapGananciaNeta();
-        imprimirHeapTimestamp();
-        imprimirHeapSuperavit(); 
     }
 
-    /*---------------------------------------------------------------------------------------------------------------------------------------------------------------- */
-    public void imprimirHeapGananciaNeta() {
-        System.out.println("Heap de Ganancia NetaA:");
-        for (int i = 0; i < heapGananciaNeta.tamano(); i++){
-            Traslado t = heapGananciaNeta.obtenerElemento(i); // Obtener y eliminar el elemento con la mayor ganancia
-            System.out.println("ID: " + t.id + ", Ganancia Neta: " + t.gananciaNeta + " Posicion: "+t.posicion);
-        }
-    }
-    public void imprimirHeapTimestamp() {
-    System.out.println("Heap de Timestamp:");
-    for (int i = 0; i < heapTimestamp.tamano(); i++) {
-        Traslado t = heapTimestamp.obtenerElemento(i); // Asegúrate de tener este método en la clase Heap
-        System.out.println("ID: " + t.id + ", Timestamp: " + t.timestamp + " Posicion: "+t.posicion);
-    }
-    }
-    public void imprimirHeapSuperavit() {
-        System.out.println("Heap de SUperavit:");
-        for (int i = 0; i < heapSuperavit.tamano(); i++) {
-            Ciudad t = heapSuperavit.obtenerElemento(i); // Asegúrate de tener este método en la clase Heap
-            System.out.println("ID: " + t.id + ", Superavit: " + t.superavit + " Posicion: "+t.posicion);
-        }
-        }
-    /*---------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+    // Sincroniza punteros entre traslados1 y traslados2
     private void apuntadortra (Traslado[] trasladosone, Traslado[] trasladostwo){ // O(T)
         int length = trasladosone.length;
         for (int i = 0; i < length; i++) {  //O(T)
@@ -107,6 +82,8 @@ public class BestEffort {
             trasladostwo[i].puntero = trasladosone[i]; 
         }
     }
+
+    // Sincroniza punteros entre ciudadesarray1 y ciudadesarray2
     private void apuntadorciu (Ciudad[] ciudadone, Ciudad[] ciudadadtwo){ // O(T)
         int length = ciudadone.length;
         for (int i = 0; i < length; i++) { //O(C)
@@ -120,15 +97,16 @@ public class BestEffort {
         this.traslados1 = new Traslado[traslados.length];
         this.traslados2 = new Traslado[traslados.length];
 
+        // Hace dos copias de traslados
         for (int j = 0; j < traslados.length; j++) {//O(T)
             Traslado original = traslados[j];
-            // Crear nuevas instancias de Traslado con los mismos valores que 'original'
             this.traslados1[j] = new Traslado(original.id, original.origen, original.destino, original.gananciaNeta, original.timestamp);
             this.traslados2[j] = new Traslado(original.id, original.origen, original.destino, original.gananciaNeta, original.timestamp);
         }
 
         apuntadortra(traslados1, traslados2);//O(T)
 
+        // Agrega los traslados a los heap de ganacia y Timestamp y lo hace O(log T) por como esta diseñado .encolar
         while (t < traslados.length) { // O(T(log T))
             heapGananciaNeta.encolar(traslados1[t]); // O(log T)
             heapTimestamp.encolar(traslados2[t]); // O(log T)
@@ -136,7 +114,8 @@ public class BestEffort {
         }
     }
 
-    public int[] despacharMasRedituables(int n){//O(n(log T))
+    // Despacha los traslados más redituables
+    public int[] despacharMasRedituables(int n){//O(n(log T + log c))
         
         int i = 0;
         if (n > heapGananciaNeta.tamano()) {
@@ -145,49 +124,38 @@ public class BestEffort {
 
         int[] res = new int[n];
         while (i < n) {//O (n(log T + log C))
-            
+            // Obtengo el traslado mas redituable
             Traslado maxGanancia = heapGananciaNeta.sacarRaiz();// O (log (T))
             res[i] = maxGanancia.id;//lo agrego al array res
-            System.out.println(maxGanancia.id + " id de mayor ganacia, origen--> " + maxGanancia.origen);
 
+            //Me guardo la cantidad de traslados y la ganacia de de todos los traslados
             totalTraslados += 1;
             gananciaTotal += maxGanancia.gananciaNeta;
 
+            //Actualizo los valores de la ciudad de origen y destino
             ciudadesarray1[maxGanancia.origen].ganancia += maxGanancia.gananciaNeta;
             ciudadesarray1[maxGanancia.destino].perdida += maxGanancia.gananciaNeta;
             ciudadesarray1[maxGanancia.origen].superavit = ciudadesarray1[maxGanancia.origen].ganancia -ciudadesarray1[maxGanancia.origen].perdida;
             ciudadesarray1[maxGanancia.destino].superavit = ciudadesarray1[maxGanancia.destino].ganancia -ciudadesarray1[maxGanancia.destino].perdida;
 
-
+            //Actualizo el heap de superavit 
             comparoSuperavit(maxGanancia); // O(log C)
-            comparoMayor(maxGanancia.origen, mayorGanacia);//O(1)
-            comparoMayorG(maxGanancia.destino, mayorPerdida);//O(1)
+
+            //Actulizo los arrayList de mayorGanacia y mayor perdida si es necesario
+            comparoMayorGanacia(maxGanancia.origen, mayorGanacia);//O(1)
+            comparoMayorPerdida(maxGanancia.destino, mayorPerdida);//O(1)
             
-            System.out.println(maxGanancia.puntero.id + " el id de otro heap");
-            System.out.println(maxGanancia.puntero.posicion + " la posicion de otro heap");
-            System.out.println(ciudadesarray1[maxGanancia.destino].superavit + " superavit de destido");
-            System.out.println(ciudadesarray1[maxGanancia.origen].superavit + " superavit de origen");
             heapTimestamp.eliminarElemento(maxGanancia.puntero.posicion);// O(log T)
 
             i++;
         }
         maxSuperavit = heapSuperavit.obtenerRaiz().id;
-        
-        imprimirHeapGananciaNeta();
-        imprimirHeapTimestamp();
-        imprimirHeapSuperavit();
-
-        System.out.println("devuele el res");
-        int j = 0;
-        while (j<res.length) {
-            System.out.println(res[j]);
-            j++;
-        }
-        System.out.println("Mas redituable: "+maxSuperavit);
 
         return res;
     }
-    private void comparoMayor(int comparar, ArrayList<Integer> list) {
+
+    //Añade el id al arrayList si es igual al valor del id que ya esta en el arrayList o si es mayor vacia el arrayList y lo agrega
+    private void comparoMayorGanacia(int comparar, ArrayList<Integer> list) {
         if (valorDeGanacia == ciudadesarray1[comparar].ganancia) {
             list.add(comparar);
             valorDeGanacia = ciudadesarray1[comparar].ganancia;
@@ -198,7 +166,8 @@ public class BestEffort {
         }
         
     }
-    private void comparoMayorG(int comparar, ArrayList<Integer> list) {
+    //Añade el id al arrayList si es igual al valor del id que ya esta en el arrayList o si es mayor vacia el arrayList y lo agrega
+    private void comparoMayorPerdida(int comparar, ArrayList<Integer> list) {
         if (valorDePerida == ciudadesarray1[comparar].perdida) {
             list.add(comparar);
             valorDePerida = ciudadesarray1[comparar].perdida;
@@ -210,14 +179,13 @@ public class BestEffort {
         
     }
     
+    //Actuliza el superavit de la ciudad de origen y destino
     private void comparoSuperavit(Traslado despachado) {// O(log C)
-
-        heapSuperavit.cambiarSuperavit(ciudadesarray1[despachado.origen].puntero.posicion,ciudadesarray1[despachado.origen]);// O (Log C)
-        heapSuperavit.cambiarSuperavit(ciudadesarray1[despachado.destino].puntero.posicion, ciudadesarray1[despachado.destino]); // (log c)
-        
-        
+        heapSuperavit.cambiarSuperavit(ciudadesarray1[despachado.origen].puntero.posicion,ciudadesarray1[despachado.origen]);// O (log C)
+        heapSuperavit.cambiarSuperavit(ciudadesarray1[despachado.destino].puntero.posicion, ciudadesarray1[despachado.destino]); // (log c)        
     }
 
+    // Despacha los traslados más antiguos
     public int[] despacharMasAntiguos(int n){
 
         int i = 0;
@@ -227,63 +195,53 @@ public class BestEffort {
 
         int[] res = new int[n];
         while (i < n) {//O (n(log T+log C))
+            // Obtengo el traslado mas antiguo
             Traslado maxAntiguo = heapTimestamp.sacarRaiz();// O (log (T))
             res[i] = maxAntiguo.id;//lo agrego al array res
-            System.out.println(maxAntiguo.id + "id de mayor antiguo, origen--> " +maxAntiguo.origen);
 
+            //Me guardo la cantidad de traslados y la ganacia de de todos los traslados
             totalTraslados += 1;
             gananciaTotal += maxAntiguo.gananciaNeta;
 
+             //Actualizo los valores de la ciudad de origen y destino
             ciudadesarray1[maxAntiguo.origen].ganancia += maxAntiguo.gananciaNeta;
             ciudadesarray1[maxAntiguo.destino].perdida += maxAntiguo.gananciaNeta;
             ciudadesarray1[maxAntiguo.origen].superavit = ciudadesarray1[maxAntiguo.origen].ganancia -ciudadesarray1[maxAntiguo.origen].perdida;
             ciudadesarray1[maxAntiguo.destino].superavit = ciudadesarray1[maxAntiguo.destino].ganancia -ciudadesarray1[maxAntiguo.destino].perdida;
 
+            //Actualizo el heap de superavit
             comparoSuperavit(maxAntiguo); // O(log C)
-            comparoMayor(maxAntiguo.origen, mayorGanacia);//O(1)
-            comparoMayorG(maxAntiguo.destino, mayorPerdida);//O(1)
+
+            //Actulizo los arrayList de mayorGanacia y mayor perdida si es necesario
+            comparoMayorGanacia(maxAntiguo.origen, mayorGanacia);//O(1)
+            comparoMayorPerdida(maxAntiguo.destino, mayorPerdida);//O(1)
             
-            System.out.println(maxAntiguo.puntero.id + " el id de otro heap");
-            System.out.println(maxAntiguo.puntero.posicion + " la posicion de otro heap");
-            System.out.println(ciudadesarray1[maxAntiguo.destino].superavit + " superavit de destido");
-            System.out.println(ciudadesarray1[maxAntiguo.origen].superavit + " superavit de origen");
+
 
             heapGananciaNeta.eliminarElemento(maxAntiguo.puntero.posicion);// O(log T)
 
             i++;
         }
         maxSuperavit = heapSuperavit.obtenerRaiz().id;
-        imprimirHeapGananciaNeta();
-        imprimirHeapTimestamp();
-        imprimirHeapSuperavit();
-        int j = 0;
-        System.out.println("devuele el res");
 
-        while (j<res.length) {
-            System.out.println(res[j]);
-            j++;
-        }
-        
         return res;
     }
 
+    // Estos metodos son O(1) porque retornamos variables ya guardadas  
+
     public int ciudadConMayorSuperavit(){
-        // Implementar
         return maxSuperavit;
     }
 
     public ArrayList<Integer> ciudadesConMayorGanancia(){
-        System.out.println("Mayor Ganancia"+mayorGanacia);
         return mayorGanacia;
     }
 
     public ArrayList<Integer> ciudadesConMayorPerdida(){
-        System.out.println("Mayor perdida"+mayorPerdida);
         return mayorPerdida;
     }
 
     public int gananciaPromedioPorTraslado(){
-        // Implementar
         return gananciaTotal / totalTraslados;
     }
     

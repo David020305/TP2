@@ -22,18 +22,17 @@ public class Heap<T> {
             _heap.add(elemento);
 
             actualizarposicion(elemento,i);
-            //elemento.posicion = i;  // Asignar la posición correcta en el heap
+            
         }
 
         // Aplicar el algoritmo de Floyd (heapify)
-        for (int i = tam / 2 - 1; i >= 0; i--) { // O(T)
+        for (int i = tam / 2 - 1; i >= 0; i--) { // O(n)
             bajar(i,_heap.get(i));
             actualizarposicion(_heap.get(i), i);
         }
     }
-    public void cambiarSuperavit (int indice, T elemento){
-        //eliminarElemento(indece);
-        //encolar(elmento);
+    // Reemplaza un elemento en el heap y ajusta su posición para mantener la propiedad del heap
+    public void cambiarSuperavit (int indice, T elemento){ // O(log n)
 
         _heap.set(indice, elemento);
         subir(indice, elemento);
@@ -41,7 +40,7 @@ public class Heap<T> {
         actualizarposicion(elemento, indice);
         
     }
-
+    // Actualiza la posición de un elemento
     private void actualizarposicion(T elemento, int pos){ //O(1)
         
         if (elemento.getClass() == Traslado.class){
@@ -54,14 +53,14 @@ public class Heap<T> {
         }
     }
 
-    // Método para encolar un Traslado
+    //Agrega un nuevo elemento al final del heap y lo va subiendo hasta encontrar su posición para mantener las propiedades del heap
     public void encolar(T elemento) { // O(log n)
-        _heap.add(elemento);  // Añadir el Traslado al heap
-        actualizarposicion(elemento,tam);  // Asignar la posición actual en el heap
+        _heap.add(elemento);  
+        actualizarposicion(elemento,tam); 
         tam++;
-        subir(tam - 1, _heap.get(tam-1));  // Mantener el orden del heap
+        subir(tam - 1, _heap.get(tam-1));  
     }
-
+    //Elimina un elemento del heap
     public void eliminarElemento(int indice) { // O(log n)
         T ultimoElemento = _heap.get(tam - 1);
         _heap.set(indice, ultimoElemento);
@@ -75,8 +74,8 @@ public class Heap<T> {
         
     }
 
-    // Método para subir un elemento en el heap
-    private void subir(int indice, T elemento) {
+    // Ajusta un elemento hacia arriba comparadno con su padre y eso nos permite hacerlo en O (log n)
+    private void subir(int indice, T elemento) { // O (log n)
         while (indice > 0) {
             int indicePadre = (indice - 1) / 2;
             if (_comparador.compare(_heap.get(indice), _heap.get(indicePadre)) < 0) {
@@ -102,24 +101,23 @@ public class Heap<T> {
         }
     }
 
-    // Método para intercambiar dos elementos
-    private void swap(int i, int j) {
+    // Intercambia dos elementos en el heap y actualiza sus posiciones
+    private void swap(int i, int j) { // O(1)
         T aux = _heap.get(i);
         _heap.set(i, _heap.get(j));
         _heap.set(j, aux);
 
-        // Actualizar las posiciones de los elementos después del swap
         actualizarposicion(_heap.get(i),i);
         actualizarposicion(_heap.get(j),j);
     }
 
-    // Método para obtener la raíz del heap
-    public T obtenerRaiz() {
+    // Devuelve el elemento en la raíz del heap sin eliminarlo
+    public T obtenerRaiz() { // O(1)
         return _heap.get(0);
     }
 
-    // Método para sacar la raíz del heap
-    public T sacarRaiz() {
+    // Elimina y devuelve el elemento en la raíz del heap, esto lo puede hacer en O(log n) debido a que remuevo el primer elemento por el ultimo y lo va bajando
+    public T sacarRaiz() { // O(log n)
         T raiz = _heap.get(0);
         T ultimoElemento = _heap.remove(tam - 1);
         tam--;
@@ -134,65 +132,8 @@ public class Heap<T> {
         return raiz;
     }
 
-    // Método para bajar un elemento en el heap
-
-    /*private void bajar(int indice, T elemento) {
-        while (true) {
-            int indiceIzquierdo = 2 * indice + 1;
-            int indiceDerecho = 2 * indice + 2;
-            int indiceMayor = indice;
-
-            if (indiceIzquierdo < tam &&
-                _comparador.compare(_heap.get(indiceIzquierdo), _heap.get(indiceMayor)) >= 0) {
-                    if (_comparador.compare(_heap.get(indiceIzquierdo), _heap.get(indiceMayor)) == 0) {
-                        if (elemento.getClass() == Traslado.class) {
-                            Traslado tras = (Traslado) _heap.get(indiceMayor);
-                            Traslado hijoizq = (Traslado) _heap.get(indiceIzquierdo);
-                            if (tras.id > hijoizq.id) {
-                                indiceMayor = indiceIzquierdo;
-                            }
-                        } else {
-                            Ciudad ciu = (Ciudad) _heap.get(indiceMayor);
-                            Ciudad hijoizq = (Ciudad) _heap.get(indiceIzquierdo);
-                            if (ciu.id > hijoizq.id) {
-                                indiceMayor = indiceIzquierdo;
-                            }
-                        }
-                    } else {
-                        indiceMayor = indiceIzquierdo;
-                    }
-            }
-            if (indiceDerecho < tam &&
-                _comparador.compare(_heap.get(indiceDerecho), _heap.get(indiceMayor)) >= 0) {
-                    if (_comparador.compare(_heap.get(indiceDerecho), _heap.get(indiceMayor)) == 0) {
-                        if (elemento.getClass() == Traslado.class) {
-                            Traslado tras = (Traslado) _heap.get(indiceMayor);
-                            Traslado hijoder = (Traslado) _heap.get(indiceDerecho);
-                            if (tras.id > hijoder.id) {
-                                indiceMayor = indiceDerecho;
-                            }
-                        } else {
-                            Ciudad ciu = (Ciudad) _heap.get(indiceMayor);
-                            Ciudad hijoder = (Ciudad) _heap.get(indiceDerecho);
-                            if (ciu.id > hijoder.id) {
-                                indiceMayor = indiceDerecho;
-                            }
-                        }
-                    } else {
-                        indiceMayor = indiceDerecho;
-                    }
-            }
-
-            if (indiceMayor == indice) {
-                break;
-            }
- 
-            swap(indice, indiceMayor);
-            indice = indiceMayor;
-        }
-    }*/
-     
-    private void bajar(int indice, T elemento) {
+   // Ajusta un elemento hacia abajo comparadno con sus hijos y eso nos permite hacerlo en O (log n)
+    private void bajar(int indice, T elemento) { // O (log n)
         while (true) {
             int indiceIzquierdo = 2 * indice + 1;
             int indiceDerecho = 2 * indice + 2;
@@ -215,7 +156,9 @@ public class Heap<T> {
         }
     }
 
-    private int obtenerIndiceMayor(int actual, int candidato, T elemento) {
+
+    //Determina cual de dos elementos tiene mayor prioridad según el comparador y en caso ser iguales por id.
+    private int obtenerIndiceMayor(int actual, int candidato, T elemento) { // O(1)
         int comparacion = _comparador.compare(_heap.get(candidato), _heap.get(actual));
         
         if (comparacion > 0) {
@@ -243,14 +186,9 @@ public class Heap<T> {
     }
     
 
-    // Método para obtener el tamaño del heap
-    public int tamano() {
+    //Obtener el tamaño del heap
+    public int tamano() { //O(1)
         return tam;
-    }
-    //( NO SE USA EN EL PROGRAMA)// solo para imprimir
-    public T obtenerElemento(int index) {
-        return _heap.get(index);
-    }
-    
+    }    
 
 }
