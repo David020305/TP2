@@ -288,12 +288,12 @@ public class BestEffortTests {
     @Test
     void estadistica_despachando_todos_con_mismo_valor(){
         Traslado[] nuevos = new Traslado[] {
-            new Traslado(1, 3, 1, 20, 7),
+            new Traslado(1, 0, 1, 20, 7),
             new Traslado(7, 6, 2, 20, 6),
             new Traslado(6, 5, 3, 20, 5),
             new Traslado(2, 2, 4, 20, 4),
             new Traslado(3, 3, 5, 20, 3),
-            new Traslado(4, 6, 6, 20, 2),
+            new Traslado(4, 1, 6, 20, 2),
             new Traslado(5, 4, 0, 20, 1)
         };
         BestEffort sis = new BestEffort(this.cantCiudades, nuevos);
@@ -301,7 +301,7 @@ public class BestEffortTests {
         sis.despacharMasAntiguos(3);
 
         assertSetEquals(new ArrayList<>(Arrays.asList(0, 6, 5)), sis.ciudadesConMayorPerdida());
-        assertSetEquals(new ArrayList<>(Arrays.asList(4, 6, 3)), sis.ciudadesConMayorGanancia());
+        assertSetEquals(new ArrayList<>(Arrays.asList(4, 1, 3)), sis.ciudadesConMayorGanancia());
 
         sis.despacharMasRedituables(4);
 
@@ -315,7 +315,7 @@ public class BestEffortTests {
         sis.despacharMasRedituables(10);
 
         assertSetEquals(new ArrayList<>(Arrays.asList(3)), sis.ciudadesConMayorPerdida());
-        assertSetEquals(new ArrayList<>(Arrays.asList(6)), sis.ciudadesConMayorGanancia());
+        assertSetEquals(new ArrayList<>(Arrays.asList(1, 6)), sis.ciudadesConMayorGanancia());
     }
 
     @Test
