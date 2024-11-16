@@ -60,7 +60,7 @@ public class Heap<T> {
         tam++;
         subir(tam - 1, _heap.get(tam-1));  
     }
-    //Elimina un elemento del heap
+    //Elimina un elemento del heap: pongo al ultimo elemento en la posicion del elemento a eliminar y lo voy bajando hasta encontrar su posicion para mantener las propiedades del heap 
     public void eliminarElemento(int indice) { // O(log n)
         T ultimoElemento = _heap.get(tam - 1);
         _heap.set(indice, ultimoElemento);
@@ -74,7 +74,7 @@ public class Heap<T> {
         
     }
 
-    // Ajusta un elemento hacia arriba comparadno con su padre y eso nos permite hacerlo en O (log n)
+    // Ajusta un elemento hacia arriba comparando con su padre y eso nos permite hacerlo en O (log n)
     private void subir(int indice, T elemento) { // O (log n)
         while (indice > 0) {
             int indicePadre = (indice - 1) / 2;
@@ -132,7 +132,7 @@ public class Heap<T> {
         return raiz;
     }
 
-   // Ajusta un elemento hacia abajo comparadno con sus hijos y eso nos permite hacerlo en O (log n)
+   // Ajusta un elemento hacia abajo comparando con sus hijos y eso nos permite hacerlo en O (log n)
     private void bajar(int indice, T elemento) { // O (log n)
         while (true) {
             int indiceIzquierdo = 2 * indice + 1;
