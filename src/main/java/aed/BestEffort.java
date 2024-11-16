@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 
 public class BestEffort {
-    //Completar atributos privados 
+     
     private Ciudad[] ciudadesarray1;
     private Ciudad[] ciudadesarray2;
     private Traslado[] traslados1;
@@ -141,7 +141,7 @@ public class BestEffort {
             //Actualizo el heap de superavit 
             comparoSuperavit(maxGanancia); // O(log C)
 
-            //Actulizo los arrayList de mayorGanacia y mayor perdida si es necesario
+            //Actualizo los arrayList de mayorGanacia y mayor perdida si es necesario
             comparoMayorGanacia(maxGanancia.origen, mayorGanacia);//O(1)
             comparoMayorPerdida(maxGanancia.destino, mayorPerdida);//O(1)
             
@@ -186,7 +186,7 @@ public class BestEffort {
     }
 
     // Despacha los traslados más antiguos
-    public int[] despacharMasAntiguos(int n){
+    public int[] despacharMasAntiguos(int n){ // O(n(log T+ log C))
 
         int i = 0;
         if (n > heapTimestamp.tamano()) {
@@ -199,7 +199,7 @@ public class BestEffort {
             Traslado maxAntiguo = heapTimestamp.sacarRaiz();// O (log (T))
             res[i] = maxAntiguo.id;//lo agrego al array res
 
-            //Me guardo la cantidad de traslados y la ganacia de de todos los traslados
+            //Me guardo la cantidad de traslados y la ganacia de todos los traslados
             totalTraslados += 1;
             gananciaTotal += maxAntiguo.gananciaNeta;
 
@@ -212,7 +212,7 @@ public class BestEffort {
             //Actualizo el heap de superavit
             comparoSuperavit(maxAntiguo); // O(log C)
 
-            //Actulizo los arrayList de mayorGanacia y mayor perdida si es necesario
+            //Actualizo los arrayList de mayorGanacia y mayor perdida si es necesario
             comparoMayorGanacia(maxAntiguo.origen, mayorGanacia);//O(1)
             comparoMayorPerdida(maxAntiguo.destino, mayorPerdida);//O(1)
             
@@ -222,7 +222,7 @@ public class BestEffort {
 
             i++;
         }
-        maxSuperavit = heapSuperavit.obtenerRaiz().id;
+        maxSuperavit = heapSuperavit.obtenerRaiz().id;//O (log C)
 
         return res;
     }
